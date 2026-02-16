@@ -7,10 +7,10 @@ const Register = () => {
   const [step, setstep] = useState(1)
   return (
     <div>
-      {step == 1 ? <Welcome nextStep={setstep} /> : <RegisterForm />}
+      {step == 1 ? <Welcome nextStep={setstep} /> : <RegisterForm nextStep={setstep} />}
       
     </div>
   )
-}
+} 
 
 export default Register
