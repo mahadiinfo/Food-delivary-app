@@ -68,7 +68,7 @@ const Login = ({ nextStep }) => {
           }}
           className="text-4xl font-extrabold text-green-700 mb-2 "
         >
-          <span className="text-3xl">&#128075;</span>Welcome back
+          <span className="text-2xl">&#128075;</span>Welcome back
         </motion.h1>
         <p className="text-gray-600 mb-6 flex items-center ">
           Login to GoFood <Leaf className="w-5 h-5 text-green-600"></Leaf>
