@@ -6,11 +6,9 @@ import {
   Leaf,
   Loader,
   LockIcon,
-  LogIn,
   LogInIcon,
   Mail,
-  User,
-  User2,
+
 } from "lucide-react";
 import React, { useState } from "react";
 import { motion } from "motion/react";
@@ -18,7 +16,7 @@ import googleLogo from "@/public/assets/googleLogo.png";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 const Login = ({ nextStep }) => {
   const [Email, setEmail] = useState("");
@@ -26,6 +24,8 @@ const Login = ({ nextStep }) => {
   const [Eyeone, setEyeone] = useState(false);
   const FormValidation = Email !== "" && Password !== "";
   const [Loading, setLoading] = useState(false);
+  const session = useSession()
+  console.log(session)
   const handleLogin = async () => {
     setLoading(true);
     try {
@@ -37,7 +37,6 @@ const Login = ({ nextStep }) => {
         toast.success("Login Successful!");
         setLoading(false);
     } catch (error) {
-      console.log(error.response.data.message);
       setLoading(false);
       toast.error(error.response.data.message);
       

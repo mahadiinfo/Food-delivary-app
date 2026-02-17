@@ -1,6 +1,7 @@
 "use client";
 import {
   ArrowLeft,
+  Contact,
   Eye,
   EyeOff,
   Leaf,
@@ -9,7 +10,6 @@ import {
   LogIn,
   Mail,
   User,
-  User2,
 } from "lucide-react";
 import React, { useState } from "react";
 import { motion } from "motion/react";
@@ -25,6 +25,8 @@ const RegisterForm = ({ nextStep }) => {
   const [Password, setPassword] = useState("");
   const [Eyeone, setEyeone] = useState(false);
   const FormValidation = Name !== "" && Email !== "" && Password !== "";
+    const [mobileNmber, setmobileNmber] = useState("")
+  
   const [Loading, setLoading] = useState(false);
   const handleRegister = async () => {
     setLoading(true);
@@ -33,8 +35,8 @@ const RegisterForm = ({ nextStep }) => {
         name: Name,
         email: Email,
         password: Password,
+        mobileNumber:mobileNmber
       });
-      console.log(result.data);
       setLoading(false);
       toast.success("Account Create Successsful!")
     } catch (error) {
@@ -103,6 +105,16 @@ const RegisterForm = ({ nextStep }) => {
               value={Email}
               type="email"
               placeholder="Your Email"
+              className="focus:outline-none pl-1 w-full"
+            />
+          </label>
+          <label className="border mb-3 flex p-3 border-gray-400 w-full rounded-xl transition-all focus-within:ring-1 focus-within:ring-green-600 focus-within:border-transparent focus-within:bg-green-600/5">
+            <Contact className="w-5 h-5 text-gray-400" />
+            <input
+              onChange={(e) => setmobileNmber(e.target.value)}
+              value={mobileNmber}
+              type="s"
+              placeholder="Your Mobile number"
               className="focus:outline-none pl-1 w-full"
             />
           </label>

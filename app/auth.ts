@@ -3,6 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import { dbConnect } from "./lib/db";
 import UserModel from "./model/user.model";
 import bcrypt from "bcryptjs";
+import Google from "next-auth/providers/google";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -11,19 +12,29 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         email: { label: "email", type: "email" },
         password: { label: "password", type: "password" },
       },
-      async authorize(credentials, request) {
+      async authorize(credentials) {
         await dbConnect();
-        console.log(credentials.email)
-        const email = credentials.email;
-        const password = credentials.password as string;
-        const user = await UserModel.findOne({ email });
-        console.log(user)
-        if (!user) {
-          throw new Error("user not exist");
+
+        const email = credentials?.email;
+        const password = credentials?.password;
+
+        if (!email || !password) {
+          throw new Error("Email and Password are required");
         }
-        const isMatch = await bcrypt.compare(password, user.password);
+
+        const user = await UserModel.findOne({ email });
+        if (!user) {
+          throw new Error("User does not exist");
+        }
+
+        if (!user.password) {
+          throw new Error("User does not exist");
+        }
+
+        const isMatch = await bcrypt.compare(password as string, user.password);
+
         if (!isMatch) {
-          throw new Error("incorrect password");
+          throw new Error("Incorrect password");
         }
 
         return {
@@ -34,9 +45,40 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         };
       },
     }),
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
   ],
 
-  callbacks: {
+ callbacks: {
+  async signIn({ user, account }) {
+    if (account?.provider === "google") {
+      await dbConnect();
+      try {
+        let dbUser = await UserModel.findOne({ email: user.email });
+        
+        if (!dbUser) {
+          dbUser = await UserModel.create({
+            name: user.name,
+            email: user.email,
+            image: user.image,
+ 
+          });
+        }
+
+        user.id = dbUser._id.toString();
+        user.role = dbUser.role || "user"; 
+        return true;
+      } catch (error) {
+        console.error("Error in Google Sign-in callback:", error);
+        return false; 
+      }
+    }
+    return true;
+  },
+
+
     jwt({ token, user }) {
       if (user) {
         ((token.id = user.id),
