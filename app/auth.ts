@@ -9,13 +9,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Credentials({
       credentials: {
         email: { label: "email", type: "email" },
-        password: { label: "Password", type: "password" },
+        password: { label: "password", type: "password" },
       },
       async authorize(credentials, request) {
         await dbConnect();
+        console.log(credentials.email)
         const email = credentials.email;
         const password = credentials.password as string;
         const user = await UserModel.findOne({ email });
+        console.log(user)
         if (!user) {
           throw new Error("user not exist");
         }
