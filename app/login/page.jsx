@@ -66,7 +66,7 @@ const Login = ({ nextStep }) => {
           transition={{
             duration: 0.6,
           }}
-          className="text-4xl font-extrabold text-green-700 mb-2 "
+          className="text-3xl font-extrabold text-green-700 mb-2 "
         >
           <span className="text-2xl">&#128075;</span>Welcome back
         </motion.h1>
