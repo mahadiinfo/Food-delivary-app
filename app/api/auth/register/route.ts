@@ -37,17 +37,16 @@ export async function POST(req:NextRequest ,) {
             return NextResponse.json({ message: "Password must be at least 6 characters long" }, { status: 400 });
         }
         const hashedPassword = await bcrypt.hash(password, 10);
-        console.log("this is password ", hashedPassword)
+        
         const newUser = await UserModel.create({
             name,
             email,
-            password:hashedPassword,
+            password: hashedPassword,
             mobileNumber,
         });
-        console.log(newUser)
         return NextResponse.json(
-            newUser,
-            {status: 201 }
+            { message: "User registered successfully", user: { id: newUser._id, email: newUser.email } },
+            { status: 201 }
         );
         
 

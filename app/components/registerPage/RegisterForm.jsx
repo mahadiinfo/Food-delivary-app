@@ -27,10 +27,11 @@ const RegisterForm = ({ nextStep }) => {
   const [Password, setPassword] = useState("");
   const [Eyeone, setEyeone] = useState(false);
   const FormValidation = Name !== "" && Email !== "" && Password !== "";
-  const [mobileNmber, setmobileNmber] = useState("");
-  const route = useRouter()
+  const [mobileNmber, setmobileNmber] = useState("")
 
   const [Loading, setLoading] = useState(false);
+  const router = useRouter();
+
   const handleRegister = async () => {
     setLoading(true);
     try {
@@ -40,8 +41,20 @@ const RegisterForm = ({ nextStep }) => {
         password: Password,
         mobileNumber: mobileNmber,
       });
-      setLoading(false);
-      toast.success("Account Create Successful! pleace Login");
+      setName("");
+      setEmail("");
+      setPassword("");
+      setmobileNmber("");
+
+      if(result?.data?.message){
+        console.log(result)
+        setLoading(false)
+        toast.success("Account Created Successfully!");
+        router.push("/");
+        
+      }
+      
+      
     } catch (error) {
       console.log(error.response.data.message);
       setLoading(false);

@@ -16,6 +16,7 @@ import Image from "next/image";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const Login = ({ nextStep }) => {
   const [Email, setEmail] = useState("");
@@ -23,21 +24,35 @@ const Login = ({ nextStep }) => {
   const [Eyeone, setEyeone] = useState(false);
   const FormValidation = Email !== "" && Password !== "";
   const [Loading, setLoading] = useState(false);
-  const session = useSession();
-  console.log(session);
+  const router = useRouter();
   const handleLogin = async () => {
     setLoading(true);
     try {
       const result = await signIn("credentials", {
         redirect: false,
-        email: Email,
-        password: Password,
+        email: Email.trim(),
+        password: Password.trim(),
       });
-      toast.success("Login Successful!");
+      if (result?.error) {
+        setLoading(false);
+        toast.error(result.error || "Login failed.");
+        return;
+      }
+
+      if (result?.ok) {
+        setLoading(false);
+        toast.success("Login Successful!");
+        router.push("/");
+
+        return;
+      }
+
       setLoading(false);
+      toast.error("Login failed. Please try again.");
     } catch (error) {
       setLoading(false);
-      toast.error(error.response.data.message);
+      console.error("[Login Error]", error);
+      toast.error("An error occurred during login");
     }
   };
   return (
@@ -132,7 +147,7 @@ const Login = ({ nextStep }) => {
           <span className=" flex-1 h-px bg-gray-400"> </span>
         </div>
         <div
-          onClick={() => signIn("google",{callbackUrl:"/"})}
+          onClick={() => signIn("google", { callbackUrl: "/" })}
           className="flex gap-1 text-gray-500 text-sm border w-full p-3 rounded-xl border-gray-300 justify-center items-center mt-2 cursor-pointer shadow hover:bg-green-600/5"
         >
           <Image src={googleLogo} height={20} width={20} alt="google logo" />
